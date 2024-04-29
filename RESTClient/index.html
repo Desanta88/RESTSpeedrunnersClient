@@ -1,0 +1,139 @@
+<html>
+    <script>
+        function getRecord(){
+            var baseURL="http://localhost/RESTSpeedrunners/";
+            var id=document.getElementById("idGET").value;
+            fetch(baseURL+=id,{
+                method:"GET"
+            })
+            .then(response=>{
+                if(response.status==200)
+                    return response.json();
+                else if(response.status==404)
+                    return -1;
+            })
+            .then(json=>{
+                    if(json==-1){
+                        res.innerHTML="Speedrunner non trovato";
+                    }
+                    else{
+                        sjson=JSON.stringify(json);
+                        res.innerHTML=sjson;
+                    }
+                }
+            );
+        }
+        function addRecord(){
+            var baseURL="http://localhost/RESTSpeedrunners/ADD";
+            var username=document.getElementById("usernamePOST").value;
+            var nationality=document.getElementById("nationalityPOST").value;
+            var gender=document.getElementById("genderPOST").value;
+            var timesSpeedrunned=document.getElementById("tsPOST").value;
+            fetch(baseURL,{
+                method:"POST",
+                headers:{
+                    'Content-Type':'application/json'
+                },
+                body:JSON.stringify({
+                    Username:username,
+                    Nationality:nationality,
+                    Gender:gender,
+                    TotalSpeedruns:timesSpeedrunned
+                })
+            })
+            .then(response=>{
+                if(response.status==200){
+                    res.innerHTML="Speedrunner aggiunto";
+                }
+            });
+        }
+        function updateRecord(){
+            var baseURL="http://localhost/RESTSpeedrunners/EDIT/";
+            var id=document.getElementById("idPUT").value;
+            var username=document.getElementById("usernamePUT").value;
+            var nationality=document.getElementById("nationalityPUT").value;
+            var gender=document.getElementById("genderPUT").value;
+            var timesSpeedrunned=document.getElementById("tsPUT").value;
+            fetch(baseURL+=id,{
+                method:"PUT",
+                headers:{
+                    'Content-Type':'application/json'
+                },
+                body:JSON.stringify({
+                    Username:username,
+                    Nationality:nationality,
+                    Gender:gender,
+                    TotalSpeedruns:timesSpeedrunned
+                })
+            })
+            .then(response=>{
+                if(response.status==200){
+                    res.innerHTML="Speedrunner modificato";
+                }
+                else if(response.status==404){
+                    res.innerHTML="Speedrunner non trovato";
+                }
+            });
+        }
+        function deleteRecord(){
+            var baseURL="http://localhost/RESTSpeedrunners/DEL/";
+            var id=document.getElementById("idDELETE").value;
+
+            fetch(baseURL+=id,{
+                method:"DELETE"
+            })
+            .then(response=>{
+                if(response.status==200){
+                    res.innerHTML="Speedrunner cancellato";
+                }
+                else if(response.status==404){
+                    res.innerHTML="Speedrunner non trovato";
+                }
+            });
+        }
+        function options(){
+            var baseURL="http://localhost/RESTSpeedrunners/";
+            fetch(baseURL,{
+                method:"OPTIONS"
+            })
+            .then(response=>{
+                if(response.status==200){
+                    var newLine="<br>";
+                    var riga0="metodi supportati:GET,POST,PUT,DELETE"+newLine+newLine;
+                    var riga1="GET:richiedere un record dal database speedrunning(tabella speedrunning)"+newLine+"esempio di URL: http://localhost/RESTSpeedrunners/  o http://localhost/RESTSpeedrunners/1 "+newLine+newLine;
+                    var riga2="POST:aggiungere un record al database speedrunning(tabella speedrunner)"+newLine+"esempio di URL: http://localhost/RESTSpeedrunners/ADD"+newLine+newLine;
+                    var riga3="PUT:modificare un record del database speedrunning(tabella speedrunner)"+newLine+"esempio di URL: http://localhost/RESTSpeedrunners/EDIT/1"+newLine+newLine;
+                    var riga4="DELETE:cancellare un record dal database speedrunning(tabella speedrunner)"+newLine+"esempio di URL: http://localhost/RESTSpeedrunners/DEL/1";
+                    res.innerHTML=riga0+riga1+riga2+riga3+riga4;
+                }
+                else
+                    res.innerHTML="qualcosa è andato storto";
+            })
+
+        }
+    </script>
+    <head>
+        <!--<script type="text/javascript" defer src="/RESTSpeedrunners/RESTFunctions.js"></script>-->
+
+        <title>Speedrunners</title>
+    </head>
+    <body>
+        <button onclick="getRecord()">GET</button>
+        <input id="idGET" type="number" placeholder="insert an id"><br><br>
+        <button onclick="addRecord()">POST</button>
+        <input id="usernamePOST" type="text" placeholder="insert a username">
+        <input id="nationalityPOST" type="text" placeholder="insert a nationality">
+        <input id="genderPOST" type="text" placeholder="insert a sex">
+        <input id="tsPOST" type="number" placeholder="insert a number"><br><br>
+        <button onclick="updateRecord()">UPDATE</button>
+        <input id="idPUT" type="number" placeholder="insert an id">
+        <input id="usernamePUT" type="text" placeholder="insert a username">
+        <input id="nationalityPUT" type="text" placeholder="insert a nationality">
+        <input id="genderPUT" type="text" placeholder="insert a sex">
+        <input id="tsPUT" type="number" placeholder="insert a number"><br><br>
+        <button onclick="deleteRecord()">DELETE</button>
+        <input id="idDELETE" type="number" placeholder="insert an id"><br><br>
+        <button onclick="options()">OPTIONS</button>
+        <div id="res"></div>
+    </body>
+</html>
